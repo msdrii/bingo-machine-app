@@ -6,11 +6,11 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.example.mybingo"
+        applicationId 'com.lifehackii.bingomachine'
         minSdk 30
         targetSdk 31
         versionCode 1
-        versionName "1.0"
+        versionName '1.0.0'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
