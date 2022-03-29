@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private Button registerMaxNumberButton;
     // 次の数字を出すボタン
     private Button nextNumberButton;
+    // 履歴をクリアするボタン
+    private Button clearHistoryButton;
     // 現在の数字を表示するTextView
     private TextView currentNumberTextView;
     // 履歴を表示するTextView
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         maxNumberEditText = findViewById(R.id.max_number);
         registerMaxNumberButton = findViewById(R.id.register_max_number);
         nextNumberButton = findViewById(R.id.next_number);
+        clearHistoryButton = findViewById(R.id.clear_history);
         currentNumberTextView = findViewById(R.id.current_number);
         historyTextView = findViewById(R.id.history);
 
@@ -63,40 +65,64 @@ public class MainActivity extends AppCompatActivity {
                 onClickNextNumber();
             }
         });
+
+        // 表示中の履歴をクリアする
+        clearHistoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickClearHistory();
+            }
+        });
     }
 
     // next_numberのボタンがタップされた時の処理
     private void onClickNextNumber() {
-        Log.d("MainActivity", "onClickNextNumber");
 
-        // maxNumberを考慮したランダムな数値
-        int nextNumber = createRandomNumber();
+        if((history.size()) == maxNumber) {
+            // test
+            Log.d("MainActivity", "history:" + String.valueOf(history.size()) + " maxNumber:" + maxNumber);
+        } else {
 
-        // 重複している数値だった場合は、数値の生成をやり直す
-        while(history.contains("" + nextNumber)) {
-            Log.d("MainActivity", "重複したので再生成");
-            nextNumber = createRandomNumber();
+            Log.d("MainActivity", "onClickNextNumber");
+
+            // maxNumberを考慮したランダムな数値
+            int nextNumber = createRandomNumber();
+
+            // 重複している数値だった場合は、数値の生成をやり直す
+            while(history.contains("" + nextNumber)) {
+                Log.d("MainActivity", "重複したので再生成");
+                nextNumber = createRandomNumber();
+            }
+
+            //nextNumberを文字列に変換する
+            String nextNumberStr = "" + nextNumber;
+
+            // nextNumberを画面に表示する
+            currentNumberTextView.setText(nextNumberStr);
+
+            // 履歴を残す
+            history.add(nextNumberStr);
+            Log.d("MainActivity", history.toString());
+
+            // 履歴を表示する
+            historyTextView.setText(history.toString());
         }
-
-        //nextNumberを文字列に変換する
-        String nextNumberStr = "" + nextNumber;
-
-        // nextNumberを画面に表示する
-        currentNumberTextView.setText(nextNumberStr);
-
-        // 履歴を残す
-        history.add(nextNumberStr);
-        Log.d("MainActivity", history.toString());
-
-        // 履歴を表示する
-        historyTextView.setText(history.toString());
     }
 
     // maxNumberを考慮したランダムな数値を生成する
     private int createRandomNumber() {
         // 0.0~74.0 (最大値が初期値の場合)の数値を生成する
-        double randomNumber = Math.random() * (maxNumber -1);
+        double randomNumber = Math.random() * (maxNumber);
         // 1~75 (最大値が初期値の場合)の整数値を生成する
         return (int) randomNumber + 1;
+    }
+
+    // clear_history ボタンが押下された際の処理
+    private void onClickClearHistory() {
+        Log.d("MainActivity", "onClickClearHistory");
+        // 履歴を削除する
+        history.clear();
+        // 履歴を表示する
+        historyTextView.setText(history.toString());
     }
 }
